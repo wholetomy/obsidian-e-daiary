@@ -2,11 +2,11 @@
 
 This plugin was created to make daily entries in a journal based on the day of the year.
 
-## How to use?
+## How to install?
 
-1. Download the plugin.
-2. Create the following folder: "\\YourVault\\.obsidian\\plugins\\e-daiary".
-3. Put the files "main.js", "manifest.json" and "styles.css" inside the folder created previously.
+1. Download the lastest release e-daiary.zip file.
+2. Extract the folder.
+3. Put it inside the following folder: "\\YourVault\\.obsidian\\plugins\\".
 4. Open your Vault using Obsidian.
 5. Enable "Community plugin" on Obsidian Settings.
 6. Enable the "e-Daiary" plugin.
@@ -16,6 +16,15 @@ This plugin was created to make daily entries in a journal based on the day of t
 10. Write your journal inside the "Day X (DD-MM-YYYY HH-mm).md" file.
 11. Repeat step 8-10 every day to create a consistent journal.
 
+## How to modify?
+1. Download the source code.
+2. Make sure you have [NodeJS](https://nodejs.org/en/download/package-manager) installed.
+3. Open it inside [VSCode](https://code.visualstudio.com/download).
+4. Open a terminal.
+5. Install the dependencies:
+	1. `npm install`
+6. Start compilation in watch mode
+	1. `npm run dev`
 
 ## Authors
 
