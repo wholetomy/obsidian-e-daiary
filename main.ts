@@ -22,7 +22,7 @@ export default class EDaiary extends Plugin {
 
     async createNewEntry(evt: MouseEvent) {
         try {
-            const today = new Date(2024, 5, 9);
+            const today = new Date();
             const currentYear = today.getFullYear().toString();
             const formattedDateTime = moment(today).format('DD-MM-YYYY HH-mm');
             const dayOfYear = this.getDayOfYear(today);
