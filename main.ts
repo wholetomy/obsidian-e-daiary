@@ -138,7 +138,7 @@ class EDaiarySettingTab extends PluginSettingTab {
         containerEl.createEl('h2', { text: 'Settings for e-Daiary' });
 
         const folders = await this.plugin.app.vault.adapter.list('');
-        const folderPaths = folders.folders.filter(folder => !folder.includes('.obsidian'));
+        const folderPaths = folders.folders.filter(folder => !/^\./.test(folder));
 
         new Setting(containerEl)
             .setName('Base Folder Path')
