@@ -1,4 +1,4 @@
-import { Notice, Plugin, PluginSettingTab, Setting, moment, TFile } from 'obsidian';
+import { Notice, Plugin, PluginSettingTab, Setting, moment, TFile, normalizePath } from 'obsidian';
 
 // Interface para as configurações do plugin
 interface EDaiarySettings {
@@ -16,17 +16,26 @@ export default class EDaiary extends Plugin {
     async onload() {
         await this.loadSettings();
         this.addSettingTab(new EDaiarySettingTab(this.app, this));
-        this.addRibbonIcon('create-new', 'Create New Entry', this.createNewEntry.bind(this))
+        
+        this.addRibbonIcon('create-new', 'Create new entry', this.createNewEntry.bind(this))
             .addClass('my-plugin-ribbon-class');
+        
+        this.addCommand({
+            id: 'create-new-entry',
+            name: 'Create New Entry',
+            callback: this.createNewEntry.bind(this)
+        });
     }
 
-    async createNewEntry(evt: MouseEvent) {
+    async createNewEntry(evt?: MouseEvent) {
         try {
             const today = new Date();
             const currentYear = today.getFullYear().toString();
             const formattedDateTime = moment(today).format('DD-MM-YYYY HH-mm');
             const dayOfYear = this.getDayOfYear(today);
-            const yearFolderPath = `${this.settings.baseFolderPath}/${currentYear}`;
+
+            const normalizedBaseFolderPath = normalizePath(this.settings.baseFolderPath);
+            const yearFolderPath = normalizePath(`${normalizedBaseFolderPath}/${currentYear}`);
 
             let foldersCreated = 0;
             let notesCreated = 0;
@@ -39,9 +48,9 @@ export default class EDaiary extends Plugin {
             for (let day = lastDay + 1; day <= dayOfYear; day++) {
                 const currentDateTime = moment().format('DD-MM-YYYY HH-mm');
                 const dayFolderName = `Dia ${day} (${currentDateTime})`;
-                const dayFolderPath = `${yearFolderPath}/${dayFolderName}`;
+                const dayFolderPath = normalizePath(`${yearFolderPath}/${dayFolderName}`);
                 const noteTitle = dayFolderName;
-                const notePath = `${dayFolderPath}/${noteTitle}.md`;
+                const notePath = normalizePath(`${dayFolderPath}/${noteTitle}.md`);
 
                 if (await this.ensureFolderExists(dayFolderPath)) {
                     foldersCreated++;
@@ -135,13 +144,12 @@ class EDaiarySettingTab extends PluginSettingTab {
         const { containerEl } = this;
 
         containerEl.empty();
-        containerEl.createEl('h2', { text: 'Settings for e-Daiary' });
 
         const folders = await this.plugin.app.vault.adapter.list('');
         const folderPaths = folders.folders.filter(folder => !/^\./.test(folder));
 
         new Setting(containerEl)
-            .setName('Base Folder Path')
+            .setName('Base folder path')
             .setDesc('Select the base folder where the annual folders will be created.')
             .addDropdown(dropdown => {
                 folderPaths.forEach(folder => dropdown.addOption(folder, folder));
@@ -153,7 +161,7 @@ class EDaiarySettingTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName('Custom Base Folder Path')
+            .setName('Custom base folder path')
             .setDesc('Or enter a custom base folder path.')
             .addText(text => text
                 .setPlaceholder('Enter folder path')
