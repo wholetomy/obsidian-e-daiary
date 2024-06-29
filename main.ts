@@ -22,7 +22,7 @@ export default class EDaiary extends Plugin {
         
         this.addCommand({
             id: 'create-new-entry',
-            name: 'Create New Entry',
+            name: 'Create new entry',
             callback: this.createNewEntry.bind(this)
         });
     }
