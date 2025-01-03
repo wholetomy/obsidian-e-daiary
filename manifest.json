@@ -1,7 +1,7 @@
 {
 	"id": "e-daiary",
 	"name": "e-Daiary",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"minAppVersion": "0.15.0",
 	"description": "Creates directories and notes based on the day of the year.",
 	"author": "Thomas Campanholi",

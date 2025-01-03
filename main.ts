@@ -31,39 +31,39 @@ export default class EDaiary extends Plugin {
         try {
             const today = new Date();
             const currentYear = today.getFullYear().toString();
-            const formattedDateTime = moment(today).format('DD-MM-YYYY HH-mm');
             const dayOfYear = this.getDayOfYear(today);
-
+    
             const normalizedBaseFolderPath = normalizePath(this.settings.baseFolderPath);
             const yearFolderPath = normalizePath(`${normalizedBaseFolderPath}/${currentYear}`);
-
+    
             let foldersCreated = 0;
             let notesCreated = 0;
-
+    
             await this.ensureFolderExists(yearFolderPath);
             const lastDay = await this.getLastRecordedDay(yearFolderPath);
-
+    
             let lastNotePath: string | null = null;
-
+    
             for (let day = lastDay + 1; day <= dayOfYear; day++) {
-                const currentDateTime = moment().format('DD-MM-YYYY HH-mm');
-                const dayFolderName = `Dia ${day} (${currentDateTime})`;
+                const dayDate = new Date(today.getFullYear(), 0, day); // Data específica para o "Dia X"
+                const formattedDate = moment(dayDate).format('DD-MM-YYYY');
+                const dayFolderName = `Dia ${day} (${formattedDate})`;
                 const dayFolderPath = normalizePath(`${yearFolderPath}/${dayFolderName}`);
                 const noteTitle = dayFolderName;
                 const notePath = normalizePath(`${dayFolderPath}/${noteTitle}.md`);
-
+    
                 if (await this.ensureFolderExists(dayFolderPath)) {
                     foldersCreated++;
                 }
                 if (await this.ensureNoteExists(notePath, noteTitle)) {
                     notesCreated++;
                 }
-
+    
                 lastNotePath = notePath;
             }
-
+    
             new Notice(`Created ${foldersCreated} folders and ${notesCreated} notes successfully!`);
-
+    
             if (lastNotePath) {
                 await this.openNoteIfExists(lastNotePath);
             }
@@ -103,11 +103,14 @@ export default class EDaiary extends Plugin {
     async ensureNoteExists(notePath: string, noteTitle: string): Promise<boolean> {
         const noteExists = await this.app.vault.adapter.exists(notePath);
         if (!noteExists) {
-            await this.app.vault.create(notePath, ``);
+            const dayNumberMatch = noteTitle.match(/Dia (\d+)/); // Captura o número do dia
+            const dayNumber = dayNumberMatch ? dayNumberMatch[1] : 'X';
+            const noteContent = `Dia #${dayNumber} `;
+            await this.app.vault.create(notePath, noteContent); // Cria a nota com o texto
             return true;
         }
         return false;
-    }
+    }    
 
     async openNoteIfExists(notePath: string) {
         const file = await this.app.vault.getAbstractFileByPath(notePath);
