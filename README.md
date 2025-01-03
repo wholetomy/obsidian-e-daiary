@@ -25,6 +25,9 @@ This plugin was created to make daily entries in a journal based on the day of t
 	1. `npm install`
 6. Start compilation in watch mode
 	1. `npm run dev`
+7. Once finished the coding, use the command below to end the coding:
+	1. `npm run build`
+8. After that, follow the instructions in: [this website](https://publish.obsidian.md/hub/04+-+Guides%2C+Workflows%2C+%26+Courses/Guides/How+to+release+a+new+version+of+your+plugin) to update the plugin.
 
 ## Authors
 
